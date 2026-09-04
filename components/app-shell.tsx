@@ -6,6 +6,7 @@ import { LanguageSwitcher } from "./language-switcher";
 
 const NAV_ITEMS = [
   { href: "/timeline", key: "timeline" },
+  { href: "/map", key: "map" },
   { href: "/settings", key: "settings" },
 ] as const;
 
