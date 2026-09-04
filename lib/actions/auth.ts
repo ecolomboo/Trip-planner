@@ -21,7 +21,12 @@ export async function requestMagicLink(formData: FormData): Promise<MagicLinkRes
 
   const supabase = await createClient();
   const headersList = await headers();
-  const origin = headersList.get("origin") ?? "http://localhost:3000";
+  // Derive the callback origin from the actual request host (works on any
+  // port), with SITE_URL as an explicit override for production.
+  const siteUrl = process.env.SITE_URL;
+  const host = headersList.get("x-forwarded-host") ?? headersList.get("host");
+  const proto = headersList.get("x-forwarded-proto") ?? "http";
+  const origin = siteUrl ? siteUrl.replace(/\/+$/, "") : `${proto}://${host}`;
 
   const { error } = await supabase.auth.signInWithOtp({
     email,

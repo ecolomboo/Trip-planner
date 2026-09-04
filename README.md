@@ -32,7 +32,7 @@ Open http://localhost:3000 — it lands on the timeline, never a splash screen.
 | `npm run build`        | Production build                          |
 | `npm run lint`         | ESLint                                    |
 | `npm run typecheck`    | Generate route types, then `tsc --noEmit` |
-| `npm run test`         | Run the Vitest suite                       |
+| `npm run test`         | Run the Vitest suite                      |
 | `npm run format`       | Format with Prettier                      |
 | `npm run format:check` | Verify formatting (used in CI)            |
 
