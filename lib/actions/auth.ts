@@ -7,7 +7,11 @@ import { isAllowedEmail, isAllowlistConfigured } from "@/lib/allowlist";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
-export type SignInResult = { error: "invalid" | "notAllowed" | "notConfigured" | "failed" };
+export type SignInResult = {
+  error: "invalid" | "notAllowed" | "notConfigured" | "failed";
+  /** Specific reason for a `failed` result — surfaced for debugging. */
+  detail?: string;
+};
 
 /**
  * Email-only sign-in: if the address is on the invite list, the user is
@@ -36,9 +40,9 @@ export async function signInWithEmail(formData: FormData): Promise<SignInResult>
     return { error: "notAllowed" };
   }
 
-  const error = await provisionAndSignIn(email);
-  if (error) {
-    return { error };
+  const result = await provisionAndSignIn(email);
+  if (result) {
+    return result;
   }
 
   // The session cookie was set on this response by signInWithPassword.
@@ -46,39 +50,54 @@ export async function signInWithEmail(formData: FormData): Promise<SignInResult>
 }
 
 /** Provisions the auth user with a throwaway password, then signs them in. */
-async function provisionAndSignIn(email: string): Promise<SignInResult["error"] | null> {
+async function provisionAndSignIn(email: string): Promise<SignInResult | null> {
   try {
     // Re-randomised on every sign-in; never shown to anyone and set immediately
     // before signing in, so it cannot drift stale.
     const password = randomBytes(32).toString("hex");
 
     const admin = createAdminClient();
-    const { data: list } = await admin.auth.admin.listUsers();
+    const { data: list, error: listError } = await admin.auth.admin.listUsers();
+    if (listError) {
+      return { error: "failed", detail: `listUsers: ${listError.message}` };
+    }
     const existing = list?.users.find((u) => u.email?.toLowerCase() === email.toLowerCase());
 
     if (existing) {
       const { error } = await admin.auth.admin.updateUserById(existing.id, { password });
-      if (error) return "failed";
+      if (error) {
+        return { error: "failed", detail: `updateUser: ${error.message}` };
+      }
     } else {
       const { error } = await admin.auth.admin.createUser({
         email,
         password,
         email_confirm: true,
       });
-      if (error) return "failed";
+      if (error) {
+        return { error: "failed", detail: `createUser: ${error.message}` };
+      }
     }
 
     const supabase = await createClient();
     const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-    if (signInError) return "failed";
+    if (signInError) {
+      return { error: "failed", detail: `signIn: ${signInError.message}` };
+    }
 
     // Make sure the user is a member of the single trip (idempotent).
-    await supabase.rpc("join_default_trip");
+    const { error: rpcError } = await supabase.rpc("join_default_trip");
+    if (rpcError) {
+      return { error: "failed", detail: `join: ${rpcError.message}` };
+    }
 
     return null;
   } catch (error) {
     console.error("signInWithEmail failed", error);
-    return "failed";
+    return {
+      error: "failed",
+      detail: error instanceof Error ? error.message : String(error),
+    };
   }
 }
 

@@ -12,16 +12,39 @@ export function SignInForm({ initialError }: { initialError?: string | null }) {
 
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(initialError ?? null);
+  const [detail, setDetail] = useState<string | null>(null);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setPending(true);
     setError(null);
-    const result = await signInWithEmail(new FormData(event.currentTarget));
-    // Success redirects server-side; if we're still here it was an error.
-    setPending(false);
-    if (result) {
-      setError(result.error);
+    setDetail(null);
+    try {
+      const result = await signInWithEmail(new FormData(event.currentTarget));
+      // Success redirects server-side; if we're still here it was an error.
+      if (result) {
+        setError(result.error);
+        setDetail(result.detail ?? null);
+      }
+    } catch {
+      setError("failed");
+    } finally {
+      setPending(false);
+    }
+  }
+
+  function messageFor(code: string | null): string {
+    switch (code) {
+      case "notAllowed":
+        return t("notAllowed");
+      case "notConfigured":
+        return t("notConfigured");
+      case "invalid":
+        return t("invalid");
+      case "failed":
+        return tErrors("somethingWentWrong");
+      default:
+        return tErrors("somethingWentWrong");
     }
   }
 
@@ -58,18 +81,17 @@ export function SignInForm({ initialError }: { initialError?: string | null }) {
         {pending ? tCommon("loading") : t("sendLink")}
       </button>
       {error && (
-        <p
+        <div
           role="alert"
           className="rounded-xl border border-danger/30 bg-danger/10 px-3.5 py-2.5 text-sm text-danger"
         >
-          {error === "notAllowed"
-            ? t("notAllowed")
-            : error === "notConfigured"
-              ? t("notConfigured")
-              : error === "invalid"
-                ? t("invalid")
-                : tErrors("somethingWentWrong")}
-        </p>
+          <p>{messageFor(error)}</p>
+          {detail && (
+            <p className="mt-1 font-mono text-xs text-danger/80" aria-live="polite">
+              {detail}
+            </p>
+          )}
+        </div>
       )}
     </form>
   );
