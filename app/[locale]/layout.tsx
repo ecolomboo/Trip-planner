@@ -26,10 +26,10 @@ export function generateStaticParams() {
 }
 
 export const metadata: Metadata = {
-  title: "Silk Road",
+  title: "Uzbekistan",
   description: "Two-person trip planner — Uzbekistan & Tajikistan, October 2026",
   appleWebApp: {
-    title: "Silk Road",
+    title: "Uzbekistan",
     statusBarStyle: "black-translucent",
   },
 };

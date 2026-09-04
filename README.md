@@ -1,4 +1,4 @@
-# Silk Road
+# Uzbekistan
 
 A two-person trip planner for an 11-day journey through Uzbekistan and
 Tajikistan (7–17 October 2026). One trip, two members, realtime sync, bilingual
