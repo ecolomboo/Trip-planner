@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useFormatter, useTranslations } from "next-intl";
 import { useEntries } from "@/hooks/use-entries";
 import { parseTripDate } from "@/lib/format";
@@ -40,6 +40,11 @@ interface EditorState {
 
 export function Timeline({ tripId, days, stops, entries: initialEntries }: Props) {
   const { entries, addEntry, updateEntry, deleteEntry } = useEntries(tripId, initialEntries);
+
+  const todayIso = new Date().toISOString().slice(0, 10);
+  const [focusDate, setFocusDate] = useState<string>(() =>
+    days.some((d) => d.date === todayIso) ? todayIso : (days[0]?.date ?? ""),
+  );
   const [editor, setEditor] = useState<EditorState | null>(null);
 
   const format = useFormatter();
@@ -60,8 +65,6 @@ export function Timeline({ tripId, days, stops, entries: initialEntries }: Props
     return map;
   }, [entries]);
 
-  const todayIso = new Date().toISOString().slice(0, 10);
-
   function handleSave(draft: EntryDraft) {
     if (editor?.mode === "edit" && editor.entry) {
       updateEntry.mutate({ ...draft, id: editor.entry.id, position: editor.entry.position });
@@ -75,6 +78,25 @@ export function Timeline({ tripId, days, stops, entries: initialEntries }: Props
     deleteEntry.mutate(id);
     setEditor(null);
   }
+
+  // Desktop keyboard: "n" opens the add dialog on the last-focussed day, so
+  // several entries can be added in a row without touching the mouse.
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      const target = event.target as HTMLElement;
+      const typing =
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.tagName === "SELECT" ||
+        target.isContentEditable;
+      if (event.key === "n" && !typing && !editor) {
+        event.preventDefault();
+        setEditor({ mode: "add", entry: null, defaultDate: focusDate });
+      }
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [editor, focusDate]);
 
   return (
     <div>
@@ -131,7 +153,10 @@ export function Timeline({ tripId, days, stops, entries: initialEntries }: Props
                         entry={entry}
                         typeLabel={tTypes(entry.type)}
                         bookingLabel={tBooking(entry.bookingStatus)}
-                        onClick={() => setEditor({ mode: "edit", entry, defaultDate: entry.date })}
+                        onClick={() => {
+                          setFocusDate(entry.date);
+                          setEditor({ mode: "edit", entry, defaultDate: entry.date });
+                        }}
                       />
                     ))}
                   </ul>
@@ -139,7 +164,10 @@ export function Timeline({ tripId, days, stops, entries: initialEntries }: Props
 
                 <button
                   type="button"
-                  onClick={() => setEditor({ mode: "add", entry: null, defaultDate: day.date })}
+                  onClick={() => {
+                    setFocusDate(day.date);
+                    setEditor({ mode: "add", entry: null, defaultDate: day.date });
+                  }}
                   className="mt-3 rounded-md px-2 py-1 text-sm text-ink-faint hover:text-turquoise"
                 >
                   + {t("addEntry")}
