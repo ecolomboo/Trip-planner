@@ -3,6 +3,8 @@
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { LanguageSwitcher } from "./language-switcher";
+import { OfflineBanner } from "./offline-banner";
+import { ServiceWorkerRegister } from "./service-worker";
 
 const NAV_ITEMS = [
   { href: "/timeline", key: "timeline" },
@@ -18,6 +20,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <ServiceWorkerRegister />
+      <OfflineBanner />
       <header className="sticky top-0 z-10 border-b border-line bg-background/95 backdrop-blur">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <Link
@@ -27,8 +31,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             Silk Road
           </Link>
           <div className="flex items-center gap-2 sm:gap-3">
-            <nav aria-label={t("label")}>
-              <ul className="flex items-center gap-1">
+            <nav aria-label={t("label")} className="max-w-full overflow-x-auto">
+              <ul className="flex items-center gap-1 whitespace-nowrap">
                 {NAV_ITEMS.map((item) => {
                   const active = pathname === item.href;
                   return (
