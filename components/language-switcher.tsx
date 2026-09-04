@@ -46,9 +46,7 @@ export function LanguageSwitcher() {
             disabled={isPending}
             onClick={() => select(value)}
             className={`min-w-9 rounded-full px-2.5 py-1.5 text-xs font-semibold tracking-wide transition-colors ${
-              active
-                ? "bg-surface-2 text-accent shadow-card"
-                : "text-ink-faint hover:text-ink"
+              active ? "bg-surface-2 text-accent shadow-card" : "text-ink-faint hover:text-ink"
             }`}
           >
             {LABELS[value].short}

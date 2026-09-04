@@ -90,7 +90,10 @@ export default async function BudgetPage({ params }: { params: Promise<{ locale:
                 return (
                   <li key={type} className="flex items-center justify-between gap-3 px-4 py-3">
                     <span className="flex items-center gap-2.5 text-ink">
-                      <span className={`h-2 w-2 rounded-full ${TYPE_DOT[type]}`} aria-hidden="true" />
+                      <span
+                        className={`h-2 w-2 rounded-full ${TYPE_DOT[type]}`}
+                        aria-hidden="true"
+                      />
                       {tTypes(type)}
                     </span>
                     <span className="font-mono text-sm tabular-nums text-ink-muted">
@@ -107,10 +110,7 @@ export default async function BudgetPage({ params }: { params: Promise<{ locale:
               <h2 className="mb-2 text-sm font-medium text-accent">{t("needsBooking")}</h2>
               <ul className="divide-y divide-accent/15 overflow-hidden rounded-2xl border border-accent/30 bg-surface shadow-card">
                 {summary.needsBooking.map((entry) => (
-                  <li
-                    key={entry.id}
-                    className="flex items-center justify-between gap-3 px-4 py-3"
-                  >
+                  <li key={entry.id} className="flex items-center justify-between gap-3 px-4 py-3">
                     <span className="min-w-0 truncate text-ink">
                       <span className="mr-2 font-mono text-xs text-ink-faint">
                         {dateLabel(entry.date)}

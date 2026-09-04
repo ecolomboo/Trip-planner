@@ -44,7 +44,9 @@ export function EntryDetail({
           <span className="rounded-full bg-surface-2 px-2.5 py-1 text-ink-muted">
             {tTypes(entry.type)}
           </span>
-          <span className={`rounded-full px-2.5 py-1 font-medium ${BOOKING_CHIP[entry.bookingStatus]}`}>
+          <span
+            className={`rounded-full px-2.5 py-1 font-medium ${BOOKING_CHIP[entry.bookingStatus]}`}
+          >
             {tBooking(entry.bookingStatus)}
           </span>
         </div>

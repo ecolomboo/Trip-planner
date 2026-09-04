@@ -138,41 +138,41 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* Mobile tab bar — thumb-reach navigation, safe-area aware. */}
       {!isAuth && (
-      <nav
-        aria-label={t("label")}
-        className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-background/85 backdrop-blur-xl md:hidden"
-        style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
-      >
-        <ul className="mx-auto grid max-w-lg grid-cols-5">
-          {NAV_ITEMS.map((item) => {
-            const active = pathname === item.href;
-            return (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  aria-current={active ? "page" : undefined}
-                  className="flex min-h-14 flex-col items-center justify-center gap-1 px-1 py-2"
-                >
-                  <span
-                    className={`grid h-7 w-12 place-items-center rounded-full transition-colors ${
-                      active ? "bg-accent/15 text-accent" : "text-ink-faint"
-                    }`}
+        <nav
+          aria-label={t("label")}
+          className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-background/85 backdrop-blur-xl md:hidden"
+          style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
+        >
+          <ul className="mx-auto grid max-w-lg grid-cols-5">
+            {NAV_ITEMS.map((item) => {
+              const active = pathname === item.href;
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    aria-current={active ? "page" : undefined}
+                    className="flex min-h-14 flex-col items-center justify-center gap-1 px-1 py-2"
                   >
-                    <Icon name={item.icon} className="h-5 w-5" />
-                  </span>
-                  <span
-                    className={`text-[10px] font-medium leading-none tracking-wide ${
-                      active ? "text-accent" : "text-ink-faint"
-                    }`}
-                  >
-                    {t(item.key)}
-                  </span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
+                    <span
+                      className={`grid h-7 w-12 place-items-center rounded-full transition-colors ${
+                        active ? "bg-accent/15 text-accent" : "text-ink-faint"
+                      }`}
+                    >
+                      <Icon name={item.icon} className="h-5 w-5" />
+                    </span>
+                    <span
+                      className={`text-[10px] font-medium leading-none tracking-wide ${
+                        active ? "text-accent" : "text-ink-faint"
+                      }`}
+                    >
+                      {t(item.key)}
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
       )}
     </div>
   );

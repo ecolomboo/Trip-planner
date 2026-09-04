@@ -82,14 +82,21 @@ export function EntryEditor({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-4">
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fade-in" onClick={onClose} aria-hidden="true" />
+      <div
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fade-in"
+        onClick={onClose}
+        aria-hidden="true"
+      />
       <div
         role="dialog"
         aria-modal="true"
         aria-label={mode === "add" ? t("add") : t("edit")}
         className="relative max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-t-2xl border border-line bg-surface p-5 shadow-float animate-sheet-up sm:rounded-2xl sm:p-6"
       >
-        <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-line-strong sm:hidden" aria-hidden="true" />
+        <div
+          className="mx-auto mb-3 h-1 w-10 rounded-full bg-line-strong sm:hidden"
+          aria-hidden="true"
+        />
 
         <form onSubmit={submit} className="space-y-4">
           <div className="flex items-center justify-between gap-3">
