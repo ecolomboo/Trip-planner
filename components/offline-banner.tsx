@@ -26,7 +26,7 @@ export function OfflineBanner() {
   return (
     <div
       role="status"
-      className="border-b border-ochre/40 bg-ochre/10 px-4 py-2 text-sm text-ochre"
+      className="border-b border-accent/40 bg-accent/10 px-4 py-2 text-sm text-accent"
     >
       <span className="font-medium">{t("title")}.</span> {t("editingUnavailable")}
     </div>

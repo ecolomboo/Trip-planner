@@ -37,10 +37,11 @@ export function MapView({ stops }: { stops: Stop[] }) {
     <div className="h-[70vh] overflow-hidden rounded-xl border border-line">
       <MapContainer center={[41, 64]} zoom={6} className="h-full w-full" zoomControl>
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          subdomains="abcd"
         />
-        <Polyline positions={route} pathOptions={{ color: "#2fd4c0", weight: 3, opacity: 0.85 }} />
+        <Polyline positions={route} pathOptions={{ color: "#e8b25f", weight: 3, opacity: 0.9 }} />
         {stops.map((stop, index) => (
           <Marker
             key={stop.id}

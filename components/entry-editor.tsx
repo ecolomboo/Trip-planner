@@ -100,7 +100,7 @@ export function EntryEditor({
               type="button"
               onClick={onClose}
               aria-label={tCommon("close")}
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-ink-faint transition-colors hover:bg-surface-raised hover:text-ink"
+              className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-ink-faint transition-colors hover:bg-surface-2 hover:text-ink"
             >
               <span className="text-lg leading-none" aria-hidden="true">
                 ×
@@ -259,7 +259,7 @@ export function EntryEditor({
               <button
                 type="button"
                 onClick={() => onDelete(entry.id)}
-                className="min-h-11 rounded-xl border border-pomegranate/40 px-4 text-sm font-medium text-pomegranate transition-colors hover:bg-pomegranate/10"
+                className="min-h-11 rounded-xl border border-danger/40 px-4 text-sm font-medium text-danger transition-colors hover:bg-danger/10"
               >
                 {tCommon("delete")}
               </button>

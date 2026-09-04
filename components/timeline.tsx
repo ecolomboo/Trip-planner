@@ -9,22 +9,22 @@ import type { BookingStatus, Entry, EntryDraft, EntryType, Stop, TripDay } from 
 import { EntryDetail } from "./entry-detail";
 import { EntryEditor } from "./entry-editor";
 
-/** Accent per entry type — one ceramic colour, used as a quiet dot. */
+/** One muted pastel per entry type — a quiet 8px dot, never a loud fill. */
 const TYPE_DOT: Record<EntryType, string> = {
-  flight: "bg-turquoise",
-  train: "bg-turquoise",
-  road_transfer: "bg-ochre",
-  accommodation: "bg-ochre",
-  tour: "bg-turquoise",
-  sight: "bg-ochre",
-  meal: "bg-pomegranate",
-  note: "bg-ink-faint",
+  flight: "bg-cat-transit",
+  train: "bg-cat-transit",
+  road_transfer: "bg-cat-road",
+  accommodation: "bg-cat-stay",
+  tour: "bg-cat-tour",
+  sight: "bg-cat-sight",
+  meal: "bg-cat-meal",
+  note: "bg-cat-note",
 };
 
-/** Booking status: ochre means "needs action", muted means done. */
-const BOOKING_CHIP: Record<BookingStatus, string> = {
+/** Booking status: gold means "needs action", muted means done. */
+const BOOKING_TEXT: Record<BookingStatus, string> = {
   booked: "text-ink-faint",
-  to_book: "bg-ochre/15 text-ochre",
+  to_book: "font-medium text-accent",
 };
 
 interface Props {
@@ -124,14 +124,14 @@ export function Timeline({ tripId, days, stops, entries: initialEntries }: Props
                 <div className="flex w-12 shrink-0 flex-col items-center">
                   <span
                     className={`font-display text-3xl font-semibold leading-none ${
-                      isToday ? "text-turquoise" : "text-ink"
+                      isToday ? "text-accent" : "text-ink"
                     }`}
                   >
                     {index + 1}
                   </span>
                   <span
                     className={`mt-2 h-2.5 w-2.5 rotate-45 rounded-[2px] ${
-                      isToday ? "bg-turquoise shadow-glow" : "bg-turquoise/70"
+                      isToday ? "bg-accent shadow-glow" : "bg-accent/70"
                     }`}
                     aria-hidden="true"
                   />
@@ -142,8 +142,18 @@ export function Timeline({ tripId, days, stops, entries: initialEntries }: Props
 
                 {/* Day content */}
                 <div className={`min-w-0 flex-1 ${index < days.length - 1 ? "pb-10" : "pb-2"}`}>
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
-                    <p className="font-mono text-xs uppercase tracking-wide text-ink-faint">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h2 className="text-base font-semibold leading-tight text-ink">
+                        {day.title}
+                      </h2>
+                      {isToday && (
+                        <span className="rounded-full bg-accent/15 px-2 py-0.5 text-[11px] font-semibold leading-none text-accent">
+                          {t("today")}
+                        </span>
+                      )}
+                    </div>
+                    <p className="mt-1 text-sm text-ink-faint">
                       {format.dateTime(parseTripDate(day.date), {
                         weekday: "short",
                         day: "numeric",
@@ -151,12 +161,6 @@ export function Timeline({ tripId, days, stops, entries: initialEntries }: Props
                         timeZone: "UTC",
                       })}
                     </p>
-                    {isToday && (
-                      <span className="rounded-full bg-turquoise/15 px-2 py-0.5 text-[11px] font-semibold leading-none text-turquoise">
-                        {t("today")}
-                      </span>
-                    )}
-                    <h2 className="text-lg font-medium leading-tight text-ink">{day.title}</h2>
                   </div>
 
                   {dayEntries.length === 0 ? (
@@ -182,7 +186,7 @@ export function Timeline({ tripId, days, stops, entries: initialEntries }: Props
                       setFocusDate(day.date);
                       setEditor({ mode: "add", entry: null, defaultDate: day.date });
                     }}
-                    className="mt-3 flex min-h-11 w-full items-center justify-center gap-1 rounded-xl border border-dashed border-line-strong px-3 text-sm font-medium text-ink-faint transition-colors hover:border-turquoise hover:text-turquoise sm:w-auto"
+                    className="mt-3 flex min-h-11 w-full items-center justify-center gap-1 rounded-xl border border-dashed border-line-strong px-3 text-sm font-medium text-ink-faint transition-colors hover:border-accent hover:text-accent sm:w-auto"
                   >
                     <span className="text-base leading-none" aria-hidden="true">
                       +
@@ -239,7 +243,7 @@ export function Timeline({ tripId, days, stops, entries: initialEntries }: Props
               type="button"
               onClick={() => setSelectedId(null)}
               aria-label={tCommon("close")}
-              className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full text-ink-faint transition-colors hover:bg-surface-raised hover:text-ink"
+              className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full text-ink-faint transition-colors hover:bg-surface-2 hover:text-ink"
             >
               <span className="text-lg leading-none" aria-hidden="true">
                 ×
@@ -320,8 +324,8 @@ function EntryRow({
         aria-pressed={selected}
         className={`flex min-h-[56px] w-full items-center gap-3 rounded-xl border px-3.5 py-2.5 text-left transition-all ${
           selected
-            ? "border-turquoise/60 bg-surface-raised shadow-card"
-            : "border-line bg-surface hover:border-line-strong active:bg-surface-raised"
+            ? "border-accent/60 bg-surface-2 shadow-card"
+            : "border-line bg-surface hover:border-line-strong active:bg-surface-2"
         }`}
       >
         <span
@@ -337,13 +341,12 @@ function EntryRow({
               </span>
             )}
           </span>
-          <span className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
-            <span className="rounded-full bg-surface-raised px-2 py-0.5 text-ink-muted">
-              {typeLabel}
+          <span className="mt-0.5 flex items-center gap-1.5 text-xs">
+            <span className="text-ink-faint">{typeLabel}</span>
+            <span className="text-ink-faint" aria-hidden="true">
+              ·
             </span>
-            <span className={`rounded-full px-2 py-0.5 font-medium ${BOOKING_CHIP[entry.bookingStatus]}`}>
-              {bookingLabel}
-            </span>
+            <span className={BOOKING_TEXT[entry.bookingStatus]}>{bookingLabel}</span>
             {entry.notes && (
               <span className="truncate text-ink-faint" title={entry.notes}>
                 · {entry.notes}

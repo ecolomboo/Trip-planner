@@ -113,7 +113,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                           aria-current={active ? "page" : undefined}
                           className={`relative flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
                             active
-                              ? "bg-surface-raised text-turquoise shadow-card"
+                              ? "bg-surface-2 text-accent shadow-card"
                               : "text-ink-muted hover:bg-surface hover:text-ink"
                           }`}
                         >
@@ -155,14 +155,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 >
                   <span
                     className={`grid h-7 w-12 place-items-center rounded-full transition-colors ${
-                      active ? "bg-turquoise/15 text-turquoise" : "text-ink-faint"
+                      active ? "bg-accent/15 text-accent" : "text-ink-faint"
                     }`}
                   >
                     <Icon name={item.icon} className="h-5 w-5" />
                   </span>
                   <span
                     className={`text-[10px] font-medium leading-none tracking-wide ${
-                      active ? "text-turquoise" : "text-ink-faint"
+                      active ? "text-accent" : "text-ink-faint"
                     }`}
                   >
                     {t(item.key)}

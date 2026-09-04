@@ -7,16 +7,16 @@ import { convertEur, formatMoney, type ExchangeRates } from "@/lib/money";
 import { createClient } from "@/lib/supabase/server";
 import { ENTRY_TYPES } from "@/lib/types";
 
-/** One ceramic colour per category, mirroring the timeline dots. */
+/** One muted pastel per category, mirroring the timeline dots. */
 const TYPE_DOT: Record<string, string> = {
-  flight: "bg-turquoise",
-  train: "bg-turquoise",
-  road_transfer: "bg-ochre",
-  accommodation: "bg-ochre",
-  tour: "bg-turquoise",
-  sight: "bg-ochre",
-  meal: "bg-pomegranate",
-  note: "bg-ink-faint",
+  flight: "bg-cat-transit",
+  train: "bg-cat-transit",
+  road_transfer: "bg-cat-road",
+  accommodation: "bg-cat-stay",
+  tour: "bg-cat-tour",
+  sight: "bg-cat-sight",
+  meal: "bg-cat-meal",
+  note: "bg-cat-note",
 };
 
 export default async function BudgetPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -63,7 +63,7 @@ export default async function BudgetPage({ params }: { params: Promise<{ locale:
               label={t("forBoth")}
               amount={formatMoney(summary.forBoth, "EUR", locale)}
               equivalent={somFor(summary.forBoth)}
-              emphasized
+              variant="hero"
             />
           </div>
 
@@ -72,14 +72,12 @@ export default async function BudgetPage({ params }: { params: Promise<{ locale:
               label={t("booked")}
               amount={formatMoney(summary.booked, "EUR", locale)}
               equivalent={somFor(summary.booked)}
-              tone="booked"
             />
             <TotalCard
               label={t("toPay")}
               amount={formatMoney(summary.toPay, "EUR", locale)}
               equivalent={somFor(summary.toPay)}
-              tone="toPay"
-              emphasized={summary.toPay > 0}
+              variant={summary.toPay > 0 ? "attention" : "plain"}
             />
           </div>
 
@@ -106,8 +104,8 @@ export default async function BudgetPage({ params }: { params: Promise<{ locale:
 
           {summary.needsBooking.length > 0 && (
             <section className="mt-6">
-              <h2 className="mb-2 text-sm font-medium text-ochre">{t("needsBooking")}</h2>
-              <ul className="divide-y divide-ochre/15 overflow-hidden rounded-2xl border border-ochre/30 bg-surface shadow-card">
+              <h2 className="mb-2 text-sm font-medium text-accent">{t("needsBooking")}</h2>
+              <ul className="divide-y divide-accent/15 overflow-hidden rounded-2xl border border-accent/30 bg-surface shadow-card">
                 {summary.needsBooking.map((entry) => (
                   <li
                     key={entry.id}
@@ -119,7 +117,7 @@ export default async function BudgetPage({ params }: { params: Promise<{ locale:
                       </span>
                       {entry.title}
                     </span>
-                    <span className="shrink-0 font-mono text-sm tabular-nums text-ochre">
+                    <span className="shrink-0 font-mono text-sm tabular-nums text-accent">
                       {formatMoney(entry.costPerPerson ?? 0, "EUR", locale)}
                     </span>
                   </li>
@@ -137,29 +135,21 @@ function TotalCard({
   label,
   amount,
   equivalent,
-  emphasized = false,
-  tone = "neutral",
+  variant = "plain",
 }: {
   label: string;
   amount: string;
   equivalent: string;
-  emphasized?: boolean;
-  tone?: "neutral" | "booked" | "toPay";
+  variant?: "plain" | "hero" | "attention";
 }) {
-  const toneClasses: Record<NonNullable<typeof tone>, string> = {
-    neutral: "",
-    booked: "border-turquoise/25",
-    toPay: "border-ochre/40",
+  const styles: Record<NonNullable<typeof variant>, string> = {
+    plain: "border-line bg-surface",
+    hero: "border-accent/40 bg-gradient-to-br from-accent/15 to-transparent",
+    attention: "border-accent/30 bg-surface",
   };
 
   return (
-    <div
-      className={`rounded-2xl border p-4 shadow-card sm:p-5 ${
-        emphasized
-          ? "border-turquoise/40 bg-gradient-to-br from-turquoise/12 to-transparent"
-          : "border-line bg-surface"
-      } ${toneClasses[tone]}`}
-    >
+    <div className={`rounded-2xl border p-4 shadow-card sm:p-5 ${styles[variant]}`}>
       <p className="text-xs font-medium uppercase tracking-wide text-ink-faint">{label}</p>
       <p className="mt-1.5 font-display text-2xl font-semibold tabular-nums text-ink sm:text-3xl">
         {amount}

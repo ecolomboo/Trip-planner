@@ -56,7 +56,7 @@ export function SignInForm({ initialError }: { initialError?: string | null }) {
       {error && (
         <p
           role="alert"
-          className="rounded-xl border border-pomegranate/30 bg-pomegranate/10 px-3.5 py-2.5 text-sm text-pomegranate"
+          className="rounded-xl border border-danger/30 bg-danger/10 px-3.5 py-2.5 text-sm text-danger"
         >
           {error === "notAllowed"
             ? t("notAllowed")

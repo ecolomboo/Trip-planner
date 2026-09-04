@@ -5,8 +5,8 @@ import { parseTripDate } from "@/lib/format";
 import type { Entry, Stop } from "@/lib/types";
 
 const BOOKING_CHIP: Record<Entry["bookingStatus"], string> = {
-  booked: "bg-surface-raised text-ink-faint",
-  to_book: "bg-ochre/15 text-ochre",
+  booked: "bg-surface-2 text-ink-faint",
+  to_book: "bg-accent/15 text-accent",
 };
 
 /** Read-only view of a selected entry, with Edit/Delete actions. */
@@ -31,7 +31,7 @@ export function EntryDetail({
   return (
     <div className="space-y-5">
       <div className="pr-8">
-        <p className="font-mono text-xs uppercase tracking-wide text-ink-faint">
+        <p className="text-sm text-ink-faint">
           {format.dateTime(parseTripDate(entry.date), {
             weekday: "short",
             day: "numeric",
@@ -41,7 +41,7 @@ export function EntryDetail({
         </p>
         <h2 className="mt-1 text-xl font-semibold leading-tight text-ink">{entry.title}</h2>
         <div className="mt-2 flex flex-wrap items-center gap-1.5 text-xs">
-          <span className="rounded-full bg-surface-raised px-2.5 py-1 text-ink-muted">
+          <span className="rounded-full bg-surface-2 px-2.5 py-1 text-ink-muted">
             {tTypes(entry.type)}
           </span>
           <span className={`rounded-full px-2.5 py-1 font-medium ${BOOKING_CHIP[entry.bookingStatus]}`}>
@@ -71,7 +71,7 @@ export function EntryDetail({
         <button
           type="button"
           onClick={onDelete}
-          className="min-h-11 flex-1 rounded-xl border border-pomegranate/40 px-4 text-sm font-medium text-pomegranate transition-colors hover:bg-pomegranate/10"
+          className="min-h-11 flex-1 rounded-xl border border-danger/40 px-4 text-sm font-medium text-danger transition-colors hover:bg-danger/10"
         >
           {tCommon("delete")}
         </button>
@@ -90,7 +90,7 @@ function Row({ label, value, href }: { label: string; value: string; href?: stri
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-turquoise underline decoration-turquoise/40 underline-offset-2 transition-colors hover:decoration-turquoise"
+            className="text-accent underline decoration-accent/40 underline-offset-2 transition-colors hover:decoration-accent"
           >
             {value}
           </a>

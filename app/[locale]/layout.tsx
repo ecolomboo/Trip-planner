@@ -39,7 +39,7 @@ export const metadata: Metadata = {
  * `themeColor` matches the page ground so the browser chrome blends in.
  */
 export const viewport: Viewport = {
-  themeColor: "#0b1226",
+  themeColor: "#0a0a0c",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",

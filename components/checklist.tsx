@@ -52,9 +52,9 @@ export function Checklist({ tripId, items: initial }: { tripId: string; items: C
               </span>
               <span className="font-mono tabular-nums text-ink-faint">{progress}%</span>
             </div>
-            <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-surface-raised">
+            <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-surface-2">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-turquoise-deep to-turquoise-bright transition-[width] duration-300"
+                className="h-full rounded-full bg-gradient-to-r from-accent-deep to-accent-bright transition-[width] duration-300"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -73,8 +73,8 @@ export function Checklist({ tripId, items: initial }: { tripId: string; items: C
                   onClick={() => toggleItem.mutate({ id: item.id, done: !item.done })}
                   className={`grid h-6 w-6 shrink-0 place-items-center rounded-lg border transition-colors ${
                     item.done
-                      ? "border-turquoise bg-turquoise text-background"
-                      : "border-line-strong bg-background text-transparent hover:border-turquoise"
+                      ? "border-accent bg-accent text-background"
+                      : "border-line-strong bg-background text-transparent hover:border-accent"
                   }`}
                 >
                   <svg
@@ -103,7 +103,7 @@ export function Checklist({ tripId, items: initial }: { tripId: string; items: C
                   type="button"
                   onClick={() => deleteItem.mutate(item.id)}
                   aria-label={tCommon("remove")}
-                  className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-ink-faint transition-colors hover:bg-pomegranate/10 hover:text-pomegranate"
+                  className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-ink-faint transition-colors hover:bg-danger/10 hover:text-danger"
                 >
                   <svg
                     viewBox="0 0 24 24"
