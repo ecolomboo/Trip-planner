@@ -32,6 +32,7 @@ Open http://localhost:3000 — it lands on the timeline, never a splash screen.
 | `npm run build`        | Production build                          |
 | `npm run lint`         | ESLint                                    |
 | `npm run typecheck`    | Generate route types, then `tsc --noEmit` |
+| `npm run test`         | Run the Vitest suite                       |
 | `npm run format`       | Format with Prettier                      |
 | `npm run format:check` | Verify formatting (used in CI)            |
 
@@ -46,3 +47,14 @@ Supabase pauses free projects after 7 days of database inactivity.
 `.github/workflows/supabase-keepalive.yml` runs `SELECT 1` every 3 days via
 `scripts/keep-alive.mjs`, using the `SUPABASE_DB_URL` repository secret, so the
 project never pauses mid-trip.
+
+## Deploy
+
+Local dev runs against the Supabase CLI (`npx supabase start`). For production:
+
+1. Create a free Supabase project and apply `supabase/migrations/0001_init.sql`
+   plus `supabase/seed.sql` (the Studio SQL editor or `supabase db push`).
+2. Create a Vercel project, connect this repo, and set the env vars from
+   `.env.example` (`ALLOWED_EMAILS` = your two emails, comma-separated).
+3. Add the `SUPABASE_DB_URL` repository secret for the keep-alive action.
+4. Deploy — CI already runs lint, typecheck, tests, and format on every push.
