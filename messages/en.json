@@ -133,6 +133,7 @@
     "checkEmail": "Check your inbox — we sent you a sign-in link.",
     "signOut": "Sign out",
     "notAllowed": "This email isn't invited to this trip.",
+    "notConfigured": "Sign-in isn't configured yet — set ALLOWED_EMAILS in the environment.",
     "signedInAs": "Signed in as {email}"
   },
   "errors": {

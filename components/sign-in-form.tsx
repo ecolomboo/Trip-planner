@@ -23,7 +23,7 @@ export function SignInForm({ initialError }: { initialError?: string | null }) {
     if ("ok" in result) {
       setSent(true);
     } else {
-      setError(result.error === "notAllowed" ? "notAllowed" : "failed");
+      setError(result.error);
     }
   }
 
@@ -60,7 +60,11 @@ export function SignInForm({ initialError }: { initialError?: string | null }) {
       </button>
       {error && (
         <p role="alert" className="text-sm text-pomegranate">
-          {error === "notAllowed" ? t("notAllowed") : tErrors("somethingWentWrong")}
+          {error === "notAllowed"
+            ? t("notAllowed")
+            : error === "notConfigured"
+              ? t("notConfigured")
+              : tErrors("somethingWentWrong")}
         </p>
       )}
     </form>

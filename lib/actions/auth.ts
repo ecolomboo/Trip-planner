@@ -2,10 +2,11 @@
 
 import { headers } from "next/headers";
 import { isLocale } from "@/i18n/routing";
-import { isAllowedEmail } from "@/lib/allowlist";
+import { isAllowedEmail, isAllowlistConfigured } from "@/lib/allowlist";
 import { createClient } from "@/lib/supabase/server";
 
-export type MagicLinkResult = { ok: true } | { error: "invalid" | "notAllowed" | "failed" };
+export type MagicLinkResult =
+  { ok: true } | { error: "invalid" | "notAllowed" | "notConfigured" | "failed" };
 
 export async function requestMagicLink(formData: FormData): Promise<MagicLinkResult> {
   const email = String(formData.get("email") ?? "").trim();
@@ -14,6 +15,9 @@ export async function requestMagicLink(formData: FormData): Promise<MagicLinkRes
 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return { error: "invalid" };
+  }
+  if (!isAllowlistConfigured()) {
+    return { error: "notConfigured" };
   }
   if (!isAllowedEmail(email)) {
     return { error: "notAllowed" };

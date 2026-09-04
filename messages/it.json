@@ -133,6 +133,7 @@
     "checkEmail": "Controlla la posta — ti abbiamo inviato un link di accesso.",
     "signOut": "Esci",
     "notAllowed": "Questa email non è invitata a questo viaggio.",
+    "notConfigured": "L'accesso non è ancora configurato — imposta ALLOWED_EMAILS nell'ambiente.",
     "signedInAs": "Accesso come {email}"
   },
   "errors": {
