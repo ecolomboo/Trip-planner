@@ -3,7 +3,6 @@
 import { useMemo } from "react";
 import { useFormatter, useTranslations } from "next-intl";
 import { parseTripDate } from "@/lib/format";
-import { dayNumber } from "@/lib/seed";
 import type { BookingStatus, Entry, EntryType, TripDay } from "@/lib/types";
 
 /** Accent per entry type — one ceramic colour, used as a quiet dot. */
@@ -37,9 +36,9 @@ export function Timeline({ days, entries }: { days: TripDay[]; entries: Entry[] 
       list.push(entry);
       map.set(entry.date, list);
     }
-    // Times are optional; entries without a time sort last, then keep stable order.
+    // Manual order within a day (`position`), with time as a stable tiebreaker.
     for (const list of map.values()) {
-      list.sort((a, b) => (a.time ?? "99:99").localeCompare(b.time ?? "99:99"));
+      list.sort((a, b) => a.position - b.position || (a.time ?? "").localeCompare(b.time ?? ""));
     }
     return map;
   }, [entries]);
@@ -60,7 +59,7 @@ export function Timeline({ days, entries }: { days: TripDay[]; entries: Entry[] 
                   isToday ? "text-turquoise" : "text-ink"
                 }`}
               >
-                {dayNumber(day.date)}
+                {index + 1}
               </span>
               <span
                 className="mt-2 h-2.5 w-2.5 rotate-45 rounded-[2px] bg-turquoise/70"

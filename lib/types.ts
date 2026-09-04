@@ -51,6 +51,8 @@ export interface Entry {
   notes?: string;
   url?: string;
   stopId?: string;
+  /** Manual order within a day (times are optional). */
+  position: number;
 }
 
 export interface ChecklistItem {
