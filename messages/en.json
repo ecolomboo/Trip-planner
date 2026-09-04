@@ -1,0 +1,135 @@
+{
+  "app": {
+    "name": "Silk Road"
+  },
+  "nav": {
+    "label": "Main navigation",
+    "timeline": "Timeline",
+    "map": "Map",
+    "budget": "Budget",
+    "checklist": "Checklist",
+    "settings": "Settings"
+  },
+  "common": {
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "confirm": "Confirm",
+    "loading": "Loading…",
+    "retry": "Retry",
+    "back": "Back",
+    "remove": "Remove",
+    "optional": "optional"
+  },
+  "timeline": {
+    "title": "Itinerary",
+    "day": "Day {number}",
+    "days": "{count, plural, =1 {# day} other {# days}}",
+    "addEntry": "Add entry",
+    "noEntries": "Nothing planned yet",
+    "today": "Today"
+  },
+  "entry": {
+    "type": {
+      "label": "Type"
+    },
+    "types": {
+      "flight": "Flight",
+      "train": "Train",
+      "road_transfer": "Road transfer",
+      "accommodation": "Accommodation",
+      "tour": "Tour",
+      "sight": "Sight",
+      "meal": "Meal",
+      "note": "Note"
+    },
+    "title": {
+      "label": "Title",
+      "placeholder": "e.g. Train to Bukhara"
+    },
+    "time": {
+      "label": "Time"
+    },
+    "cost": {
+      "label": "Cost per person",
+      "somEquivalent": "≈ {amount} som"
+    },
+    "booking": {
+      "label": "Booking",
+      "booked": "Booked",
+      "to_book": "To book"
+    },
+    "notes": {
+      "label": "Notes",
+      "placeholder": "Confirmation codes, meeting points…"
+    },
+    "url": {
+      "label": "Link"
+    },
+    "stop": {
+      "label": "Linked stop",
+      "none": "None"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "language": {
+      "label": "Language",
+      "description": "App language"
+    },
+    "currency": {
+      "label": "Base currency",
+      "value": "EUR"
+    },
+    "exchangeRates": {
+      "label": "Exchange rates",
+      "description": "Used to show local-currency equivalents."
+    },
+    "rate": {
+      "label": "Rate for {currency}"
+    },
+    "theme": {
+      "label": "Theme",
+      "dark": "Dark"
+    }
+  },
+  "map": {
+    "title": "Map"
+  },
+  "budget": {
+    "title": "Budget",
+    "perPerson": "Per person",
+    "forBoth": "For both of us",
+    "booked": "Booked",
+    "toPay": "Still to pay",
+    "byCategory": "By category",
+    "needsBooking": "Needs booking",
+    "noCosts": "No costs yet"
+  },
+  "checklist": {
+    "title": "Checklist",
+    "addItem": "Add item",
+    "empty": "Nothing on the list",
+    "placeholder": "e.g. Book the train"
+  },
+  "offline": {
+    "title": "You're offline",
+    "description": "Showing the last synced trip. Editing is unavailable until you're back online.",
+    "editingUnavailable": "Editing is unavailable without a connection."
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "email": "Email",
+    "sendLink": "Send magic link",
+    "checkEmail": "Check your inbox — we sent you a sign-in link.",
+    "signOut": "Sign out",
+    "notAllowed": "This email isn't invited to this trip."
+  },
+  "errors": {
+    "somethingWentWrong": "Something went wrong.",
+    "tryAgain": "Try again"
+  }
+}

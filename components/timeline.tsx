@@ -1,0 +1,149 @@
+"use client";
+
+import { useMemo } from "react";
+import { useFormatter, useTranslations } from "next-intl";
+import { parseTripDate } from "@/lib/format";
+import { dayNumber } from "@/lib/seed";
+import type { BookingStatus, Entry, EntryType, TripDay } from "@/lib/types";
+
+/** Accent per entry type — one ceramic colour, used as a quiet dot. */
+const TYPE_DOT: Record<EntryType, string> = {
+  flight: "bg-turquoise",
+  train: "bg-turquoise",
+  road_transfer: "bg-ochre",
+  accommodation: "bg-ochre",
+  tour: "bg-turquoise",
+  sight: "bg-ochre",
+  meal: "bg-pomegranate",
+  note: "bg-ink-faint",
+};
+
+/** Booking status: ochre means "needs action", muted means done. */
+const BOOKING_TEXT: Record<BookingStatus, string> = {
+  booked: "text-ink-faint",
+  to_book: "text-ochre",
+};
+
+export function Timeline({ days, entries }: { days: TripDay[]; entries: Entry[] }) {
+  const format = useFormatter();
+  const t = useTranslations("timeline");
+  const tTypes = useTranslations("entry.types");
+  const tBooking = useTranslations("entry.booking");
+
+  const byDate = useMemo(() => {
+    const map = new Map<string, Entry[]>();
+    for (const entry of entries) {
+      const list = map.get(entry.date) ?? [];
+      list.push(entry);
+      map.set(entry.date, list);
+    }
+    // Times are optional; entries without a time sort last, then keep stable order.
+    for (const list of map.values()) {
+      list.sort((a, b) => (a.time ?? "99:99").localeCompare(b.time ?? "99:99"));
+    }
+    return map;
+  }, [entries]);
+
+  const todayIso = new Date().toISOString().slice(0, 10);
+
+  return (
+    <ol>
+      {days.map((day, index) => {
+        const dayEntries = byDate.get(day.date) ?? [];
+        const isToday = day.date === todayIso;
+        return (
+          <li key={day.date} className="flex gap-4">
+            {/* Rail: day number, diamond marker, connecting line */}
+            <div className="flex w-12 shrink-0 flex-col items-center">
+              <span
+                className={`font-display text-3xl font-semibold leading-none ${
+                  isToday ? "text-turquoise" : "text-ink"
+                }`}
+              >
+                {dayNumber(day.date)}
+              </span>
+              <span
+                className="mt-2 h-2.5 w-2.5 rotate-45 rounded-[2px] bg-turquoise/70"
+                aria-hidden="true"
+              />
+              {index < days.length - 1 && (
+                <span className="mt-2 w-px flex-1 bg-line" aria-hidden="true" />
+              )}
+            </div>
+
+            {/* Day content */}
+            <div className={`min-w-0 flex-1 ${index < days.length - 1 ? "pb-10" : "pb-2"}`}>
+              <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
+                <p className="font-mono text-xs uppercase tracking-wide text-ink-faint">
+                  {format.dateTime(parseTripDate(day.date), {
+                    weekday: "short",
+                    day: "numeric",
+                    month: "short",
+                    timeZone: "UTC",
+                  })}
+                  {isToday && (
+                    <span className="ml-2 font-sans normal-case tracking-normal text-turquoise">
+                      {t("today")}
+                    </span>
+                  )}
+                </p>
+                <h2 className="text-lg font-medium leading-tight text-ink">{day.title}</h2>
+              </div>
+
+              {dayEntries.length === 0 ? (
+                <p className="mt-2 text-sm text-ink-faint">{t("noEntries")}</p>
+              ) : (
+                <ul className="mt-3 space-y-2">
+                  {dayEntries.map((entry) => (
+                    <EntryRow
+                      key={entry.id}
+                      entry={entry}
+                      typeLabel={tTypes(entry.type)}
+                      bookingLabel={tBooking(entry.bookingStatus)}
+                    />
+                  ))}
+                </ul>
+              )}
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
+function EntryRow({
+  entry,
+  typeLabel,
+  bookingLabel,
+}: {
+  entry: Entry;
+  typeLabel: string;
+  bookingLabel: string;
+}) {
+  return (
+    <li className="flex items-start gap-3 rounded-lg border border-line bg-surface px-3 py-2">
+      <span
+        className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${TYPE_DOT[entry.type]}`}
+        aria-hidden="true"
+      />
+      <div className="min-w-0 flex-1">
+        <div className="flex items-baseline justify-between gap-2">
+          <p className="truncate font-medium text-ink">{entry.title}</p>
+          {entry.time && (
+            <span className="shrink-0 font-mono text-xs text-ink-muted">{entry.time}</span>
+          )}
+        </div>
+        <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-ink-faint">
+          <span>{typeLabel}</span>
+          <span className={`font-medium ${BOOKING_TEXT[entry.bookingStatus]}`}>{bookingLabel}</span>
+          {entry.notes && (
+            <span className="truncate" title={entry.notes}>
+              · {entry.notes}
+            </span>
+          )}
+        </div>
+      </div>
+    </li>
+  );
+}

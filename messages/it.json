@@ -1,0 +1,135 @@
+{
+  "app": {
+    "name": "Silk Road"
+  },
+  "nav": {
+    "label": "Navigazione principale",
+    "timeline": "Itinerario",
+    "map": "Mappa",
+    "budget": "Budget",
+    "checklist": "Lista",
+    "settings": "Impostazioni"
+  },
+  "common": {
+    "add": "Aggiungi",
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "close": "Chiudi",
+    "confirm": "Conferma",
+    "loading": "Caricamento…",
+    "retry": "Riprova",
+    "back": "Indietro",
+    "remove": "Rimuovi",
+    "optional": "facoltativo"
+  },
+  "timeline": {
+    "title": "Itinerario",
+    "day": "Giorno {number}",
+    "days": "{count, plural, =1 {# giorno} other {# giorni}}",
+    "addEntry": "Aggiungi voce",
+    "noEntries": "Ancora niente in programma",
+    "today": "Oggi"
+  },
+  "entry": {
+    "type": {
+      "label": "Tipo"
+    },
+    "types": {
+      "flight": "Volo",
+      "train": "Treno",
+      "road_transfer": "Trasferimento su strada",
+      "accommodation": "Alloggio",
+      "tour": "Tour",
+      "sight": "Luogo d'interesse",
+      "meal": "Pasto",
+      "note": "Nota"
+    },
+    "title": {
+      "label": "Titolo",
+      "placeholder": "es. Treno per Bukhara"
+    },
+    "time": {
+      "label": "Ora"
+    },
+    "cost": {
+      "label": "Costo a persona",
+      "somEquivalent": "≈ {amount} som"
+    },
+    "booking": {
+      "label": "Prenotazione",
+      "booked": "Prenotato",
+      "to_book": "Da prenotare"
+    },
+    "notes": {
+      "label": "Note",
+      "placeholder": "Codici di conferma, punti d'incontro…"
+    },
+    "url": {
+      "label": "Link"
+    },
+    "stop": {
+      "label": "Tappa collegata",
+      "none": "Nessuna"
+    }
+  },
+  "settings": {
+    "title": "Impostazioni",
+    "language": {
+      "label": "Lingua",
+      "description": "Lingua dell'app"
+    },
+    "currency": {
+      "label": "Valuta di base",
+      "value": "EUR"
+    },
+    "exchangeRates": {
+      "label": "Tassi di cambio",
+      "description": "Usati per mostrare gli equivalenti in valuta locale."
+    },
+    "rate": {
+      "label": "Tasso per {currency}"
+    },
+    "theme": {
+      "label": "Tema",
+      "dark": "Scuro"
+    }
+  },
+  "map": {
+    "title": "Mappa"
+  },
+  "budget": {
+    "title": "Budget",
+    "perPerson": "A persona",
+    "forBoth": "Per entrambi",
+    "booked": "Prenotato",
+    "toPay": "Ancora da pagare",
+    "byCategory": "Per categoria",
+    "needsBooking": "Da prenotare",
+    "noCosts": "Nessun costo inserito"
+  },
+  "checklist": {
+    "title": "Lista",
+    "addItem": "Aggiungi voce",
+    "empty": "La lista è vuota",
+    "placeholder": "es. Prenota il treno"
+  },
+  "offline": {
+    "title": "Sei offline",
+    "description": "Mostro l'ultimo viaggio sincronizzato. La modifica non è disponibile finché non torni online.",
+    "editingUnavailable": "La modifica non è disponibile senza connessione."
+  },
+  "auth": {
+    "signIn": "Accedi",
+    "email": "Email",
+    "sendLink": "Invia link di accesso",
+    "checkEmail": "Controlla la posta — ti abbiamo inviato un link di accesso.",
+    "signOut": "Esci",
+    "notAllowed": "Questa email non è invitata a questo viaggio."
+  },
+  "errors": {
+    "somethingWentWrong": "Qualcosa è andato storto.",
+    "tryAgain": "Riprova"
+  }
+}

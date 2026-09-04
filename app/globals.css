@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+/*
+ * Timurid majolica palette — deep lapis / night blue ground, ceramic
+ * turquoise, mud-brick ochre, and a sparing pomegranate red.
+ *
+ * Every color is a CSS custom property so a future light theme only has to
+ * override `:root` values; Tailwind utilities reference the variables through
+ * `@theme inline`, so the token layer is the single source of truth.
+ */
+:root {
+  /* Ground & surfaces */
+  --background: #0b1226; /* page ground — night blue */
+  --surface: #111a38; /* panels */
+  --surface-raised: #17224a; /* elevated cards, hover */
+  --line: #24305e; /* hairline borders */
+  --line-strong: #33426f; /* stronger separators */
+
+  /* Ink — pushed up for daylight phone contrast */
+  --ink: #eef1fb; /* primary text */
+  --ink-muted: #b9c2e1; /* secondary text */
+  --ink-faint: #7f8bb3; /* captions, disabled */
+
+  /* Accents */
+  --turquoise: #2fd4c0; /* ceramic turquoise */
+  --ochre: #d99a4a; /* mud-brick ochre */
+  --pomegranate: #d64541; /* pomegranate red — used sparingly */
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+  --color-turquoise: var(--turquoise);
+  --color-ochre: var(--ochre);
+  --color-pomegranate: var(--pomegranate);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-fraunces);
+}
+
+/* Respect reduced motion globally. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  background-color: var(--background);
+  color: var(--ink);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+/* Deliberate, high-visibility focus ring. */
+:focus-visible {
+  outline: 2px solid var(--turquoise);
+  outline-offset: 2px;
+}
