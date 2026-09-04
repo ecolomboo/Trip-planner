@@ -42,6 +42,10 @@ export function SignInForm({ initialError }: { initialError?: string | null }) {
           required
           autoComplete="email"
           inputMode="email"
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
+          enterKeyHint="go"
           placeholder="you@example.com"
           className="min-h-11 w-full rounded-xl border border-line bg-background px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-faint transition-colors hover:border-line-strong"
         />
@@ -62,7 +66,9 @@ export function SignInForm({ initialError }: { initialError?: string | null }) {
             ? t("notAllowed")
             : error === "notConfigured"
               ? t("notConfigured")
-              : tErrors("somethingWentWrong")}
+              : error === "invalid"
+                ? t("invalid")
+                : tErrors("somethingWentWrong")}
         </p>
       )}
     </form>

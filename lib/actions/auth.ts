@@ -17,7 +17,12 @@ export type SignInResult = { error: "invalid" | "notAllowed" | "notConfigured" |
  * set and the user is redirected to the timeline.
  */
 export async function signInWithEmail(formData: FormData): Promise<SignInResult> {
-  const email = String(formData.get("email") ?? "").trim();
+  // Normalise aggressively: some mobile keyboards insert non-breaking spaces
+  // or capitalise the first letter, which would otherwise fail the regex.
+  const email = String(formData.get("email") ?? "")
+    .replace(/[\u00a0\u2007\u202f]/g, " ")
+    .trim()
+    .toLowerCase();
   const localeParam = String(formData.get("locale") ?? "");
   const locale = isLocale(localeParam) ? localeParam : "en";
 
