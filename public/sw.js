@@ -1,8 +1,8 @@
-// Silk Road service worker — caches the app shell and the last-synced SSR'd
+// Uzbekistan service worker — caches the app shell and the last-synced SSR'd
 // trip data, so opening the app with no signal still shows the plan instead of
 // an error screen. No offline writes: editing simply needs a connection.
 
-const CACHE = "silk-road-v1";
+const CACHE = "uzbekistan-v1";
 
 self.addEventListener("install", () => {
   self.skipWaiting();
