@@ -30,7 +30,8 @@
     "days": "{count, plural, =1 {# giorno} other {# giorni}}",
     "addEntry": "Aggiungi voce",
     "noEntries": "Ancora niente in programma",
-    "today": "Oggi"
+    "today": "Oggi",
+    "selectHint": "Seleziona una voce per vederne i dettagli"
   },
   "entry": {
     "add": "Aggiungi voce",

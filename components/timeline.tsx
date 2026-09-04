@@ -3,8 +3,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useFormatter, useTranslations } from "next-intl";
 import { useEntries } from "@/hooks/use-entries";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { parseTripDate } from "@/lib/format";
 import type { BookingStatus, Entry, EntryDraft, EntryType, Stop, TripDay } from "@/lib/types";
+import { EntryDetail } from "./entry-detail";
 import { EntryEditor } from "./entry-editor";
 
 /** Accent per entry type — one ceramic colour, used as a quiet dot. */
@@ -46,6 +48,10 @@ export function Timeline({ tripId, days, stops, entries: initialEntries }: Props
     days.some((d) => d.date === todayIso) ? todayIso : (days[0]?.date ?? ""),
   );
   const [editor, setEditor] = useState<EditorState | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const selectedEntry = selectedId ? (entries.find((e) => e.id === selectedId) ?? null) : null;
 
   const format = useFormatter();
   const t = useTranslations("timeline");
@@ -77,6 +83,12 @@ export function Timeline({ tripId, days, stops, entries: initialEntries }: Props
   function handleDelete(id: string) {
     deleteEntry.mutate(id);
     setEditor(null);
+    setSelectedId((current) => (current === id ? null : current));
+  }
+
+  function openEditor(entry: Entry) {
+    setFocusDate(entry.date);
+    setEditor({ mode: "edit", entry, defaultDate: entry.date });
   }
 
   // Desktop keyboard: "n" opens the add dialog on the last-focussed day, so
@@ -99,84 +111,124 @@ export function Timeline({ tripId, days, stops, entries: initialEntries }: Props
   }, [editor, focusDate]);
 
   return (
-    <div>
-      <ol>
-        {days.map((day, index) => {
-          const dayEntries = byDate.get(day.date) ?? [];
-          const isToday = day.date === todayIso;
-          return (
-            <li key={day.date} className="flex gap-4">
-              {/* Rail: day number, diamond marker, connecting line */}
-              <div className="flex w-12 shrink-0 flex-col items-center">
-                <span
-                  className={`font-display text-3xl font-semibold leading-none ${
-                    isToday ? "text-turquoise" : "text-ink"
-                  }`}
-                >
-                  {index + 1}
-                </span>
-                <span
-                  className="mt-2 h-2.5 w-2.5 rotate-45 rounded-[2px] bg-turquoise/70"
-                  aria-hidden="true"
-                />
-                {index < days.length - 1 && (
-                  <span className="mt-2 w-px flex-1 bg-line" aria-hidden="true" />
-                )}
-              </div>
-
-              {/* Day content */}
-              <div className={`min-w-0 flex-1 ${index < days.length - 1 ? "pb-10" : "pb-2"}`}>
-                <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
-                  <p className="font-mono text-xs uppercase tracking-wide text-ink-faint">
-                    {format.dateTime(parseTripDate(day.date), {
-                      weekday: "short",
-                      day: "numeric",
-                      month: "short",
-                      timeZone: "UTC",
-                    })}
-                    {isToday && (
-                      <span className="ml-2 font-sans normal-case tracking-normal text-turquoise">
-                        {t("today")}
-                      </span>
-                    )}
-                  </p>
-                  <h2 className="text-lg font-medium leading-tight text-ink">{day.title}</h2>
+    <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-8">
+      <div>
+        <ol>
+          {days.map((day, index) => {
+            const dayEntries = byDate.get(day.date) ?? [];
+            const isToday = day.date === todayIso;
+            return (
+              <li key={day.date} className="flex gap-4">
+                {/* Rail: day number, diamond marker, connecting line */}
+                <div className="flex w-12 shrink-0 flex-col items-center">
+                  <span
+                    className={`font-display text-3xl font-semibold leading-none ${
+                      isToday ? "text-turquoise" : "text-ink"
+                    }`}
+                  >
+                    {index + 1}
+                  </span>
+                  <span
+                    className="mt-2 h-2.5 w-2.5 rotate-45 rounded-[2px] bg-turquoise/70"
+                    aria-hidden="true"
+                  />
+                  {index < days.length - 1 && (
+                    <span className="mt-2 w-px flex-1 bg-line" aria-hidden="true" />
+                  )}
                 </div>
 
-                {dayEntries.length === 0 ? (
-                  <p className="mt-2 text-sm text-ink-faint">{t("noEntries")}</p>
-                ) : (
-                  <ul className="mt-3 space-y-2">
-                    {dayEntries.map((entry) => (
-                      <EntryRow
-                        key={entry.id}
-                        entry={entry}
-                        typeLabel={tTypes(entry.type)}
-                        bookingLabel={tBooking(entry.bookingStatus)}
-                        onClick={() => {
-                          setFocusDate(entry.date);
-                          setEditor({ mode: "edit", entry, defaultDate: entry.date });
-                        }}
-                      />
-                    ))}
-                  </ul>
-                )}
+                {/* Day content */}
+                <div className={`min-w-0 flex-1 ${index < days.length - 1 ? "pb-10" : "pb-2"}`}>
+                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
+                    <p className="font-mono text-xs uppercase tracking-wide text-ink-faint">
+                      {format.dateTime(parseTripDate(day.date), {
+                        weekday: "short",
+                        day: "numeric",
+                        month: "short",
+                        timeZone: "UTC",
+                      })}
+                      {isToday && (
+                        <span className="ml-2 font-sans normal-case tracking-normal text-turquoise">
+                          {t("today")}
+                        </span>
+                      )}
+                    </p>
+                    <h2 className="text-lg font-medium leading-tight text-ink">{day.title}</h2>
+                  </div>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    setFocusDate(day.date);
-                    setEditor({ mode: "add", entry: null, defaultDate: day.date });
-                  }}
-                  className="mt-3 rounded-md px-2 py-1 text-sm text-ink-faint hover:text-turquoise"
-                >
-                  + {t("addEntry")}
-                </button>
-              </div>
-            </li>
-          );
-        })}
-      </ol>
+                  {dayEntries.length === 0 ? (
+                    <p className="mt-2 text-sm text-ink-faint">{t("noEntries")}</p>
+                  ) : (
+                    <ul className="mt-3 space-y-2">
+                      {dayEntries.map((entry) => (
+                        <EntryRow
+                          key={entry.id}
+                          entry={entry}
+                          typeLabel={tTypes(entry.type)}
+                          bookingLabel={tBooking(entry.bookingStatus)}
+                          onClick={() => setSelectedId(entry.id)}
+                        />
+                      ))}
+                    </ul>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFocusDate(day.date);
+                      setEditor({ mode: "add", entry: null, defaultDate: day.date });
+                    }}
+                    className="mt-3 rounded-md px-2 py-1 text-sm text-ink-faint hover:text-turquoise"
+                  >
+                    + {t("addEntry")}
+                  </button>
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
+
+      <aside className="hidden lg:block">
+        <div className="sticky top-16">
+          {selectedEntry ? (
+            <EntryDetail
+              entry={selectedEntry}
+              stops={stops}
+              onEdit={() => openEditor(selectedEntry)}
+              onDelete={() => handleDelete(selectedEntry.id)}
+            />
+          ) : (
+            <p className="rounded-lg border border-line bg-surface p-4 text-sm text-ink-faint">
+              {t("selectHint")}
+            </p>
+          )}
+        </div>
+      </aside>
+
+      {selectedEntry && !isDesktop && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center">
+          <div
+            className="absolute inset-0 bg-black/60"
+            onClick={() => setSelectedId(null)}
+            aria-hidden="true"
+          />
+          <div className="relative max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-t-xl border border-line bg-surface p-5 sm:rounded-xl">
+            <EntryDetail
+              entry={selectedEntry}
+              stops={stops}
+              onEdit={() => {
+                openEditor(selectedEntry);
+                setSelectedId(null);
+              }}
+              onDelete={() => {
+                handleDelete(selectedEntry.id);
+                setSelectedId(null);
+              }}
+            />
+          </div>
+        </div>
+      )}
 
       {editor && (
         <EntryEditor
