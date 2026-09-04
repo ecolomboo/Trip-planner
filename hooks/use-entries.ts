@@ -1,16 +1,22 @@
 "use client";
 
+import { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
 import { mapEntry } from "@/lib/map";
 import {
+  applyRemoteChange,
   nextPosition,
   removeEntryFromCache,
   toEntryRow,
   updateEntryInCache,
   upsertEntry,
+  type EntryChangeEvent,
 } from "@/lib/sync/entries";
 import type { Entry, EntryDraft } from "@/lib/types";
+import type { Database } from "@/types/database";
+
+type EntryRow = Database["public"]["Tables"]["entries"]["Row"];
 
 const supabase = createClient();
 
@@ -119,6 +125,29 @@ export function useEntries(tripId: string, initial: Entry[]) {
       if (ctx?.previous) queryClient.setQueryData(key, ctx.previous);
     },
   });
+
+  // Device-to-device sync: apply the other person's writes as they land.
+  useEffect(() => {
+    const queryKey = entriesKey(tripId);
+    const channel = supabase
+      .channel(`entries:${tripId}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "entries", filter: `trip_id=eq.${tripId}` },
+        (payload) => {
+          const event: EntryChangeEvent =
+            payload.eventType === "DELETE"
+              ? { eventType: "DELETE", oldId: payload.old?.id }
+              : { eventType: payload.eventType, new: mapEntry(payload.new as EntryRow) };
+          queryClient.setQueryData<Entry[]>(queryKey, (old) => applyRemoteChange(old ?? [], event));
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [tripId, queryClient]);
 
   return { entries, addEntry, updateEntry, deleteEntry };
 }

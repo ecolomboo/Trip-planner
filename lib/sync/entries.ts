@@ -34,6 +34,24 @@ export function removeEntryFromCache(entries: Entry[], id: string): Entry[] {
   return entries.filter((e) => e.id !== id);
 }
 
+/** A change delivered over Supabase realtime (`postgres_changes`). */
+export interface EntryChangeEvent {
+  eventType: "INSERT" | "UPDATE" | "DELETE";
+  new?: Entry;
+  oldId?: string;
+}
+
+/** Apply a remote change to a cached list, last-write-wins by id. */
+export function applyRemoteChange(entries: Entry[], event: EntryChangeEvent): Entry[] {
+  if (event.eventType === "DELETE" && event.oldId) {
+    return removeEntryFromCache(entries, event.oldId);
+  }
+  if (event.new) {
+    return upsertEntry(entries, event.new);
+  }
+  return entries;
+}
+
 /** Next manual position for a new entry on a date (appends at the end). */
 export function nextPosition(entries: Entry[], date: string): number {
   return (

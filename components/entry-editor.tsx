@@ -133,7 +133,7 @@ export function EntryEditor({
                 onChange={(event) => setDate(event.target.value)}
                 className={FIELD}
               >
-                {days.map((day, index) => (
+                {days.map((day) => (
                   <option key={day.date} value={day.date}>
                     {format.dateTime(parseTripDate(day.date), {
                       day: "numeric",
