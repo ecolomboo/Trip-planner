@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
-import { requestMagicLink } from "@/lib/actions/auth";
+import { signInWithEmail } from "@/lib/actions/auth";
 
 export function SignInForm({ initialError }: { initialError?: string | null }) {
   const t = useTranslations("auth");
@@ -11,28 +11,18 @@ export function SignInForm({ initialError }: { initialError?: string | null }) {
   const locale = useLocale();
 
   const [pending, setPending] = useState(false);
-  const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(initialError ?? null);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setPending(true);
     setError(null);
-    const result = await requestMagicLink(new FormData(event.currentTarget));
+    const result = await signInWithEmail(new FormData(event.currentTarget));
+    // Success redirects server-side; if we're still here it was an error.
     setPending(false);
-    if ("ok" in result) {
-      setSent(true);
-    } else {
+    if (result) {
       setError(result.error);
     }
-  }
-
-  if (sent) {
-    return (
-      <div className="rounded-lg border border-line bg-surface p-4">
-        <p className="text-ink-muted">{t("checkEmail")}</p>
-      </div>
-    );
   }
 
   return (
@@ -56,7 +46,7 @@ export function SignInForm({ initialError }: { initialError?: string | null }) {
         disabled={pending}
         className="rounded-md bg-turquoise px-4 py-2 font-medium text-background disabled:opacity-60"
       >
-        {pending ? tCommon("loading") : t("sendLink")}
+        {pending ? tCommon("loading") : t("signIn")}
       </button>
       {error && (
         <p role="alert" className="text-sm text-pomegranate">
