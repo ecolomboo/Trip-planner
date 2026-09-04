@@ -48,13 +48,28 @@ Supabase pauses free projects after 7 days of database inactivity.
 `scripts/keep-alive.mjs`, using the `SUPABASE_DB_URL` repository secret, so the
 project never pauses mid-trip.
 
-## Deploy
+## Deploy (hosted Supabase + Vercel)
 
-Local dev runs against the Supabase CLI (`npx supabase start`). For production:
+**1. Supabase → SQL Editor** — paste the whole `supabase/setup.sql` and Run.
 
-1. Create a free Supabase project and apply `supabase/migrations/0001_init.sql`
-   plus `supabase/seed.sql` (the Studio SQL editor or `supabase db push`).
-2. Create a Vercel project, connect this repo, and set the env vars from
-   `.env.example` (`ALLOWED_EMAILS` = your two emails, comma-separated).
-3. Add the `SUPABASE_DB_URL` repository secret for the keep-alive action.
-4. Deploy — CI already runs lint, typecheck, tests, and format on every push.
+**2. Supabase → Authentication → URL Configuration** — set:
+
+- Site URL: `https://YOUR-APP.vercel.app`
+- Redirect URLs: `https://YOUR-APP.vercel.app/**`, `http://localhost:3000/**`, `http://localhost:3001/**`
+
+**3. Vercel → Environment Variables** (from Supabase → Project Settings → API):
+
+```
+NEXT_PUBLIC_SUPABASE_URL=https://YOUR-PROJECT.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon/publishable key>
+SUPABASE_SERVICE_ROLE_KEY=<service_role/secret key>
+SITE_URL=https://YOUR-APP.vercel.app
+ALLOWED_EMAILS=you@example.com,partner@example.com
+```
+
+**4. Deploy.** Magic-link emails use Supabase's built-in sender by default — check
+Spam the first time and mark "Not spam". For reliable inbox delivery (or a custom
+"sender name"), enable a custom SMTP in Supabase → Authentication → Emails (e.g.
+Resend's free tier).
+
+Also add `SUPABASE_DB_URL` as the GitHub **repository secret** for the keep-alive action.
