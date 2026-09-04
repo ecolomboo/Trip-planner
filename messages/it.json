@@ -33,6 +33,8 @@
     "today": "Oggi"
   },
   "entry": {
+    "add": "Aggiungi voce",
+    "edit": "Modifica voce",
     "type": {
       "label": "Tipo"
     },
@@ -49,6 +51,9 @@
     "title": {
       "label": "Titolo",
       "placeholder": "es. Treno per Bukhara"
+    },
+    "date": {
+      "label": "Data"
     },
     "time": {
       "label": "Ora"

@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
+import { Providers } from "@/components/providers";
 import { isLocale, routing } from "@/i18n/routing";
 import "../globals.css";
 
@@ -51,7 +52,9 @@ export default async function LocaleLayout({
     >
       <body className="min-h-screen">
         <NextIntlClientProvider messages={messages}>
-          <AppShell>{children}</AppShell>
+          <Providers>
+            <AppShell>{children}</AppShell>
+          </Providers>
         </NextIntlClientProvider>
       </body>
     </html>

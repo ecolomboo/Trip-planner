@@ -60,3 +60,6 @@ export interface ChecklistItem {
   title: string;
   done: boolean;
 }
+
+/** Fields a user fills in when creating an entry (id and position are derived). */
+export type EntryDraft = Omit<Entry, "id" | "position">;

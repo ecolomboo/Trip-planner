@@ -1,0 +1,272 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useFormatter, useTranslations } from "next-intl";
+import { parseTripDate } from "@/lib/format";
+import {
+  ENTRY_TYPES,
+  type BookingStatus,
+  type Entry,
+  type EntryDraft,
+  type EntryType,
+  type Stop,
+  type TripDay,
+} from "@/lib/types";
+
+const FIELD = "w-full rounded-md border border-line bg-background px-3 py-2 text-ink text-sm";
+
+interface Props {
+  mode: "add" | "edit";
+  entry: Entry | null;
+  defaultDate: string;
+  days: TripDay[];
+  stops: Stop[];
+  onClose: () => void;
+  onSave: (draft: EntryDraft) => void;
+  onDelete?: (id: string) => void;
+}
+
+export function EntryEditor({
+  mode,
+  entry,
+  defaultDate,
+  days,
+  stops,
+  onClose,
+  onSave,
+  onDelete,
+}: Props) {
+  const t = useTranslations("entry");
+  const tCommon = useTranslations("common");
+  const tTypes = useTranslations("entry.types");
+  const tBooking = useTranslations("entry.booking");
+  const tStop = useTranslations("entry.stop");
+  const format = useFormatter();
+
+  const [title, setTitle] = useState(entry?.title ?? "");
+  const [type, setType] = useState<EntryType>(entry?.type ?? "note");
+  const [date, setDate] = useState(entry?.date ?? defaultDate);
+  const [time, setTime] = useState(entry?.time ?? "");
+  const [booking, setBooking] = useState<BookingStatus>(entry?.bookingStatus ?? "to_book");
+  const [cost, setCost] = useState(entry?.costPerPerson?.toString() ?? "");
+  const [notes, setNotes] = useState(entry?.notes ?? "");
+  const [url, setUrl] = useState(entry?.url ?? "");
+  const [stopId, setStopId] = useState(entry?.stopId ?? "");
+
+  useEffect(() => {
+    function onKey(event: KeyboardEvent) {
+      if (event.key === "Escape") onClose();
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  function submit(event: React.FormEvent) {
+    event.preventDefault();
+    if (!title.trim()) return;
+    onSave({
+      title: title.trim(),
+      type,
+      date,
+      time: time || undefined,
+      bookingStatus: booking,
+      costPerPerson: cost ? Number(cost) : undefined,
+      notes: notes.trim() || undefined,
+      url: url.trim() || undefined,
+      stopId: stopId || undefined,
+    });
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center">
+      <div className="absolute inset-0 bg-black/60" onClick={onClose} aria-hidden="true" />
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={mode === "add" ? t("add") : t("edit")}
+        className="relative max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-t-xl border border-line bg-surface p-4 shadow-xl sm:rounded-xl sm:p-6"
+      >
+        <form onSubmit={submit} className="space-y-4">
+          <h2 className="font-display text-xl font-semibold text-ink">
+            {mode === "add" ? t("add") : t("edit")}
+          </h2>
+
+          <div>
+            <label htmlFor="entry-title" className="mb-1 block text-sm font-medium text-ink">
+              {t("title.label")}
+            </label>
+            <input
+              id="entry-title"
+              autoFocus
+              value={title}
+              onChange={(event) => setTitle(event.target.value)}
+              placeholder={t("title.placeholder")}
+              className={FIELD}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            <div>
+              <label htmlFor="entry-type" className="mb-1 block text-sm font-medium text-ink">
+                {t("type.label")}
+              </label>
+              <select
+                id="entry-type"
+                value={type}
+                onChange={(event) => setType(event.target.value as EntryType)}
+                className={FIELD}
+              >
+                {ENTRY_TYPES.map((value) => (
+                  <option key={value} value={value}>
+                    {tTypes(value)}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="entry-date" className="mb-1 block text-sm font-medium text-ink">
+                {t("date.label")}
+              </label>
+              <select
+                id="entry-date"
+                value={date}
+                onChange={(event) => setDate(event.target.value)}
+                className={FIELD}
+              >
+                {days.map((day, index) => (
+                  <option key={day.date} value={day.date}>
+                    {format.dateTime(parseTripDate(day.date), {
+                      day: "numeric",
+                      month: "short",
+                      timeZone: "UTC",
+                    })}{" "}
+                    · {day.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="col-span-2 sm:col-span-1">
+              <label htmlFor="entry-time" className="mb-1 block text-sm font-medium text-ink">
+                {t("time.label")}
+              </label>
+              <input
+                id="entry-time"
+                type="time"
+                value={time}
+                onChange={(event) => setTime(event.target.value)}
+                className={FIELD}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label htmlFor="entry-booking" className="mb-1 block text-sm font-medium text-ink">
+                {t("booking.label")}
+              </label>
+              <select
+                id="entry-booking"
+                value={booking}
+                onChange={(event) => setBooking(event.target.value as BookingStatus)}
+                className={FIELD}
+              >
+                <option value="to_book">{tBooking("to_book")}</option>
+                <option value="booked">{tBooking("booked")}</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="entry-cost" className="mb-1 block text-sm font-medium text-ink">
+                {t("cost.label")}
+              </label>
+              <input
+                id="entry-cost"
+                type="number"
+                inputMode="decimal"
+                min="0"
+                step="0.01"
+                value={cost}
+                onChange={(event) => setCost(event.target.value)}
+                className={FIELD}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="entry-stop" className="mb-1 block text-sm font-medium text-ink">
+              {t("stop.label")}
+            </label>
+            <select
+              id="entry-stop"
+              value={stopId}
+              onChange={(event) => setStopId(event.target.value)}
+              className={FIELD}
+            >
+              <option value="">{tStop("none")}</option>
+              {stops.map((stop) => (
+                <option key={stop.id} value={stop.id}>
+                  {stop.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="entry-notes" className="mb-1 block text-sm font-medium text-ink">
+              {t("notes.label")}
+            </label>
+            <textarea
+              id="entry-notes"
+              value={notes}
+              onChange={(event) => setNotes(event.target.value)}
+              placeholder={t("notes.placeholder")}
+              rows={3}
+              className={FIELD}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="entry-url" className="mb-1 block text-sm font-medium text-ink">
+              {t("url.label")}
+            </label>
+            <input
+              id="entry-url"
+              type="url"
+              value={url}
+              onChange={(event) => setUrl(event.target.value)}
+              className={FIELD}
+            />
+          </div>
+
+          <div className="flex items-center justify-between gap-3 pt-1">
+            {onDelete && entry ? (
+              <button
+                type="button"
+                onClick={() => onDelete(entry.id)}
+                className="rounded-md border border-pomegranate/50 px-3 py-2 text-sm text-pomegranate"
+              >
+                {tCommon("delete")}
+              </button>
+            ) : (
+              <span />
+            )}
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={onClose}
+                className="rounded-md border border-line px-3 py-2 text-sm text-ink-muted hover:text-ink"
+              >
+                {tCommon("cancel")}
+              </button>
+              <button
+                type="submit"
+                className="rounded-md bg-turquoise px-4 py-2 text-sm font-medium text-background"
+              >
+                {tCommon("save")}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}

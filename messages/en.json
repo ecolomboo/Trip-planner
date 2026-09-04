@@ -33,6 +33,8 @@
     "today": "Today"
   },
   "entry": {
+    "add": "Add entry",
+    "edit": "Edit entry",
     "type": {
       "label": "Type"
     },
@@ -49,6 +51,9 @@
     "title": {
       "label": "Title",
       "placeholder": "e.g. Train to Bukhara"
+    },
+    "date": {
+      "label": "Date"
     },
     "time": {
       "label": "Time"
