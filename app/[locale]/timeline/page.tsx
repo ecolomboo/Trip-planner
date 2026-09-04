@@ -1,8 +1,10 @@
 import { getTranslations } from "next-intl/server";
 import { Timeline } from "@/components/timeline";
+import { requireUser } from "@/lib/auth";
 import { seedDays, seedEntries } from "@/lib/seed";
 
 export default async function TimelinePage() {
+  await requireUser();
   const t = await getTranslations("timeline");
 
   return (

@@ -9,6 +9,6 @@ export const routing = defineRouting({
 export type AppLocale = (typeof routing.locales)[number];
 
 /** Narrows an unknown `[locale]` segment value to a supported locale. */
-export function isLocale(value: string | undefined): value is AppLocale {
+export function isLocale(value: string | null | undefined): value is AppLocale {
   return typeof value === "string" && (routing.locales as readonly string[]).includes(value);
 }

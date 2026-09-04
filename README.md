@@ -26,14 +26,14 @@ Open http://localhost:3000 — it lands on the timeline, never a splash screen.
 
 ## Scripts
 
-| Command                    | What it does                                  |
-| -------------------------- | --------------------------------------------- |
-| `npm run dev`              | Dev server                                    |
-| `npm run build`            | Production build                              |
-| `npm run lint`             | ESLint                                        |
-| `npm run typecheck`        | Generate route types, then `tsc --noEmit`     |
-| `npm run format`           | Format with Prettier                          |
-| `npm run format:check`     | Verify formatting (used in CI)                |
+| Command                | What it does                              |
+| ---------------------- | ----------------------------------------- |
+| `npm run dev`          | Dev server                                |
+| `npm run build`        | Production build                          |
+| `npm run lint`         | ESLint                                    |
+| `npm run typecheck`    | Generate route types, then `tsc --noEmit` |
+| `npm run format`       | Format with Prettier                      |
+| `npm run format:check` | Verify formatting (used in CI)            |
 
 ## Environment
 

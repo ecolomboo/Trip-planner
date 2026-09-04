@@ -126,7 +126,8 @@
     "sendLink": "Send magic link",
     "checkEmail": "Check your inbox — we sent you a sign-in link.",
     "signOut": "Sign out",
-    "notAllowed": "This email isn't invited to this trip."
+    "notAllowed": "This email isn't invited to this trip.",
+    "signedInAs": "Signed in as {email}"
   },
   "errors": {
     "somethingWentWrong": "Something went wrong.",

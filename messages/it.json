@@ -126,7 +126,8 @@
     "sendLink": "Invia link di accesso",
     "checkEmail": "Controlla la posta — ti abbiamo inviato un link di accesso.",
     "signOut": "Esci",
-    "notAllowed": "Questa email non è invitata a questo viaggio."
+    "notAllowed": "Questa email non è invitata a questo viaggio.",
+    "signedInAs": "Accesso come {email}"
   },
   "errors": {
     "somethingWentWrong": "Qualcosa è andato storto.",

@@ -1,8 +1,12 @@
 import { getTranslations } from "next-intl/server";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { SignOutButton } from "@/components/sign-out-button";
+import { requireUser } from "@/lib/auth";
 
 export default async function SettingsPage() {
+  const user = await requireUser();
   const t = await getTranslations("settings");
+  const tAuth = await getTranslations("auth");
 
   return (
     <div className="max-w-2xl">
@@ -34,6 +38,15 @@ export default async function SettingsPage() {
         <div className="flex items-center justify-between gap-4">
           <h2 className="font-medium text-ink">{t("theme.label")}</h2>
           <span className="text-sm text-ink-muted">{t("theme.dark")}</span>
+        </div>
+      </section>
+
+      <section className="mt-4 rounded-lg border border-line bg-surface p-4">
+        <div className="flex items-center justify-between gap-4">
+          <h2 className="font-medium text-ink">
+            {tAuth("signedInAs", { email: user.email ?? "" })}
+          </h2>
+          <SignOutButton />
         </div>
       </section>
     </div>
