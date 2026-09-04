@@ -128,6 +128,7 @@
   },
   "auth": {
     "signIn": "Accedi",
+    "subtitle": "Bentornati — il vostro viaggio condiviso in Uzbekistan e Tagikistan.",
     "email": "Email",
     "sendLink": "Invia link di accesso",
     "checkEmail": "Controlla la posta — ti abbiamo inviato un link di accesso.",

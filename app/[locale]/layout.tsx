@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Fraunces, Geist, Geist_Mono } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
@@ -28,6 +28,21 @@ export function generateStaticParams() {
 export const metadata: Metadata = {
   title: "Silk Road",
   description: "Two-person trip planner — Uzbekistan & Tajikistan, October 2026",
+  appleWebApp: {
+    title: "Silk Road",
+    statusBarStyle: "black-translucent",
+  },
+};
+
+/*
+ * `viewportFit: cover` lets the app draw into the iPhone notch/safe areas;
+ * `themeColor` matches the page ground so the browser chrome blends in.
+ */
+export const viewport: Viewport = {
+  themeColor: "#0b1226",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default async function LocaleLayout({

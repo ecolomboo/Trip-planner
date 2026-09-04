@@ -13,7 +13,10 @@ import {
   type TripDay,
 } from "@/lib/types";
 
-const FIELD = "w-full rounded-md border border-line bg-background px-3 py-2 text-ink text-sm";
+const FIELD =
+  "w-full rounded-xl border border-line bg-background px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-faint transition-colors hover:border-line-strong";
+
+const LABEL = "mb-1.5 block text-sm font-medium text-ink";
 
 interface Props {
   mode: "add" | "edit";
@@ -78,21 +81,35 @@ export function EntryEditor({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center">
-      <div className="absolute inset-0 bg-black/60" onClick={onClose} aria-hidden="true" />
+    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-4">
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fade-in" onClick={onClose} aria-hidden="true" />
       <div
         role="dialog"
         aria-modal="true"
         aria-label={mode === "add" ? t("add") : t("edit")}
-        className="relative max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-t-xl border border-line bg-surface p-4 shadow-xl sm:rounded-xl sm:p-6"
+        className="relative max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-t-2xl border border-line bg-surface p-5 shadow-float animate-sheet-up sm:rounded-2xl sm:p-6"
       >
+        <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-line-strong sm:hidden" aria-hidden="true" />
+
         <form onSubmit={submit} className="space-y-4">
-          <h2 className="font-display text-xl font-semibold text-ink">
-            {mode === "add" ? t("add") : t("edit")}
-          </h2>
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="font-display text-xl font-semibold text-ink">
+              {mode === "add" ? t("add") : t("edit")}
+            </h2>
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label={tCommon("close")}
+              className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-ink-faint transition-colors hover:bg-surface-raised hover:text-ink"
+            >
+              <span className="text-lg leading-none" aria-hidden="true">
+                ×
+              </span>
+            </button>
+          </div>
 
           <div>
-            <label htmlFor="entry-title" className="mb-1 block text-sm font-medium text-ink">
+            <label htmlFor="entry-title" className={LABEL}>
               {t("title.label")}
             </label>
             <input
@@ -107,7 +124,7 @@ export function EntryEditor({
 
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             <div>
-              <label htmlFor="entry-type" className="mb-1 block text-sm font-medium text-ink">
+              <label htmlFor="entry-type" className={LABEL}>
                 {t("type.label")}
               </label>
               <select
@@ -124,7 +141,7 @@ export function EntryEditor({
               </select>
             </div>
             <div>
-              <label htmlFor="entry-date" className="mb-1 block text-sm font-medium text-ink">
+              <label htmlFor="entry-date" className={LABEL}>
                 {t("date.label")}
               </label>
               <select
@@ -146,7 +163,7 @@ export function EntryEditor({
               </select>
             </div>
             <div className="col-span-2 sm:col-span-1">
-              <label htmlFor="entry-time" className="mb-1 block text-sm font-medium text-ink">
+              <label htmlFor="entry-time" className={LABEL}>
                 {t("time.label")}
               </label>
               <input
@@ -161,7 +178,7 @@ export function EntryEditor({
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label htmlFor="entry-booking" className="mb-1 block text-sm font-medium text-ink">
+              <label htmlFor="entry-booking" className={LABEL}>
                 {t("booking.label")}
               </label>
               <select
@@ -175,7 +192,7 @@ export function EntryEditor({
               </select>
             </div>
             <div>
-              <label htmlFor="entry-cost" className="mb-1 block text-sm font-medium text-ink">
+              <label htmlFor="entry-cost" className={LABEL}>
                 {t("cost.label")}
               </label>
               <input
@@ -192,7 +209,7 @@ export function EntryEditor({
           </div>
 
           <div>
-            <label htmlFor="entry-stop" className="mb-1 block text-sm font-medium text-ink">
+            <label htmlFor="entry-stop" className={LABEL}>
               {t("stop.label")}
             </label>
             <select
@@ -211,7 +228,7 @@ export function EntryEditor({
           </div>
 
           <div>
-            <label htmlFor="entry-notes" className="mb-1 block text-sm font-medium text-ink">
+            <label htmlFor="entry-notes" className={LABEL}>
               {t("notes.label")}
             </label>
             <textarea
@@ -225,7 +242,7 @@ export function EntryEditor({
           </div>
 
           <div>
-            <label htmlFor="entry-url" className="mb-1 block text-sm font-medium text-ink">
+            <label htmlFor="entry-url" className={LABEL}>
               {t("url.label")}
             </label>
             <input
@@ -242,7 +259,7 @@ export function EntryEditor({
               <button
                 type="button"
                 onClick={() => onDelete(entry.id)}
-                className="rounded-md border border-pomegranate/50 px-3 py-2 text-sm text-pomegranate"
+                className="min-h-11 rounded-xl border border-pomegranate/40 px-4 text-sm font-medium text-pomegranate transition-colors hover:bg-pomegranate/10"
               >
                 {tCommon("delete")}
               </button>
@@ -253,14 +270,11 @@ export function EntryEditor({
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-md border border-line px-3 py-2 text-sm text-ink-muted hover:text-ink"
+                className="min-h-11 rounded-xl border border-line px-4 text-sm font-medium text-ink-muted transition-colors hover:text-ink"
               >
                 {tCommon("cancel")}
               </button>
-              <button
-                type="submit"
-                className="rounded-md bg-turquoise px-4 py-2 text-sm font-medium text-background"
-              >
+              <button type="submit" className="btn-primary min-h-11 rounded-xl px-5 text-sm">
                 {tCommon("save")}
               </button>
             </div>

@@ -4,6 +4,11 @@ import { useFormatter, useTranslations } from "next-intl";
 import { parseTripDate } from "@/lib/format";
 import type { Entry, Stop } from "@/lib/types";
 
+const BOOKING_CHIP: Record<Entry["bookingStatus"], string> = {
+  booked: "bg-surface-raised text-ink-faint",
+  to_book: "bg-ochre/15 text-ochre",
+};
+
 /** Read-only view of a selected entry, with Edit/Delete actions. */
 export function EntryDetail({
   entry,
@@ -24,8 +29,8 @@ export function EntryDetail({
   const stop = stops.find((s) => s.id === entry.stopId);
 
   return (
-    <div className="space-y-4">
-      <div>
+    <div className="space-y-5">
+      <div className="pr-8">
         <p className="font-mono text-xs uppercase tracking-wide text-ink-faint">
           {format.dateTime(parseTripDate(entry.date), {
             weekday: "short",
@@ -35,12 +40,17 @@ export function EntryDetail({
           })}
         </p>
         <h2 className="mt-1 text-xl font-semibold leading-tight text-ink">{entry.title}</h2>
-        <p className="mt-1 text-sm text-ink-muted">
-          {tTypes(entry.type)} · {tBooking(entry.bookingStatus)}
-        </p>
+        <div className="mt-2 flex flex-wrap items-center gap-1.5 text-xs">
+          <span className="rounded-full bg-surface-raised px-2.5 py-1 text-ink-muted">
+            {tTypes(entry.type)}
+          </span>
+          <span className={`rounded-full px-2.5 py-1 font-medium ${BOOKING_CHIP[entry.bookingStatus]}`}>
+            {tBooking(entry.bookingStatus)}
+          </span>
+        </div>
       </div>
 
-      <dl className="space-y-2 text-sm">
+      <dl className="space-y-3 text-sm">
         {entry.time && <Row label={t("time.label")} value={entry.time} />}
         {entry.costPerPerson != null && (
           <Row label={t("cost.label")} value={`€ ${entry.costPerPerson}`} />
@@ -50,18 +60,18 @@ export function EntryDetail({
         {entry.url && <Row label={t("url.label")} value={entry.url} href={entry.url} />}
       </dl>
 
-      <div className="flex gap-2 border-t border-line pt-4">
+      <div className="flex gap-2.5 border-t border-line pt-4">
         <button
           type="button"
           onClick={onEdit}
-          className="rounded-md bg-turquoise px-4 py-2 text-sm font-medium text-background"
+          className="btn-primary min-h-11 flex-1 rounded-xl px-4 text-sm"
         >
           {tCommon("edit")}
         </button>
         <button
           type="button"
           onClick={onDelete}
-          className="rounded-md border border-pomegranate/50 px-4 py-2 text-sm text-pomegranate"
+          className="min-h-11 flex-1 rounded-xl border border-pomegranate/40 px-4 text-sm font-medium text-pomegranate transition-colors hover:bg-pomegranate/10"
         >
           {tCommon("delete")}
         </button>
@@ -73,14 +83,14 @@ export function EntryDetail({
 function Row({ label, value, href }: { label: string; value: string; href?: string }) {
   return (
     <div>
-      <dt className="text-xs text-ink-faint">{label}</dt>
-      <dd className="mt-0.5 text-ink">
+      <dt className="text-xs font-medium text-ink-faint">{label}</dt>
+      <dd className="mt-0.5 break-words text-ink">
         {href ? (
           <a
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-turquoise underline"
+            className="text-turquoise underline decoration-turquoise/40 underline-offset-2 transition-colors hover:decoration-turquoise"
           >
             {value}
           </a>

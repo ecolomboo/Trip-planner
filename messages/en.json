@@ -128,6 +128,7 @@
   },
   "auth": {
     "signIn": "Sign in",
+    "subtitle": "Welcome back — your shared trip to Uzbekistan & Tajikistan.",
     "email": "Email",
     "sendLink": "Send magic link",
     "checkEmail": "Check your inbox — we sent you a sign-in link.",

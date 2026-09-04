@@ -7,6 +7,18 @@ import { convertEur, formatMoney, type ExchangeRates } from "@/lib/money";
 import { createClient } from "@/lib/supabase/server";
 import { ENTRY_TYPES } from "@/lib/types";
 
+/** One ceramic colour per category, mirroring the timeline dots. */
+const TYPE_DOT: Record<string, string> = {
+  flight: "bg-turquoise",
+  train: "bg-turquoise",
+  road_transfer: "bg-ochre",
+  accommodation: "bg-ochre",
+  tour: "bg-turquoise",
+  sight: "bg-ochre",
+  meal: "bg-pomegranate",
+  note: "bg-ink-faint",
+};
+
 export default async function BudgetPage({ params }: { params: Promise<{ locale: string }> }) {
   await requireUser();
   const { locale } = await params;
@@ -36,7 +48,9 @@ export default async function BudgetPage({ params }: { params: Promise<{ locale:
       </header>
 
       {summary.perPerson === 0 ? (
-        <p className="text-ink-faint">{t("noCosts")}</p>
+        <p className="rounded-2xl border border-dashed border-line p-6 text-center text-ink-faint">
+          {t("noCosts")}
+        </p>
       ) : (
         <>
           <div className="grid gap-3 sm:grid-cols-2">
@@ -53,30 +67,35 @@ export default async function BudgetPage({ params }: { params: Promise<{ locale:
             />
           </div>
 
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <div className="mt-3 grid gap-3 sm:grid-cols-2">
             <TotalCard
               label={t("booked")}
               amount={formatMoney(summary.booked, "EUR", locale)}
               equivalent={somFor(summary.booked)}
+              tone="booked"
             />
             <TotalCard
               label={t("toPay")}
               amount={formatMoney(summary.toPay, "EUR", locale)}
               equivalent={somFor(summary.toPay)}
+              tone="toPay"
               emphasized={summary.toPay > 0}
             />
           </div>
 
           <section className="mt-6">
             <h2 className="mb-2 text-sm font-medium text-ink-muted">{t("byCategory")}</h2>
-            <ul className="divide-y divide-line rounded-lg border border-line bg-surface">
+            <ul className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface shadow-card">
               {ENTRY_TYPES.map((type) => {
                 const amount = summary.byCategory[type];
                 if (amount === 0) return null;
                 return (
-                  <li key={type} className="flex items-center justify-between px-4 py-2.5">
-                    <span className="text-ink">{tTypes(type)}</span>
-                    <span className="font-mono text-sm text-ink-muted">
+                  <li key={type} className="flex items-center justify-between gap-3 px-4 py-3">
+                    <span className="flex items-center gap-2.5 text-ink">
+                      <span className={`h-2 w-2 rounded-full ${TYPE_DOT[type]}`} aria-hidden="true" />
+                      {tTypes(type)}
+                    </span>
+                    <span className="font-mono text-sm tabular-nums text-ink-muted">
                       {formatMoney(amount, "EUR", locale)}
                     </span>
                   </li>
@@ -88,19 +107,19 @@ export default async function BudgetPage({ params }: { params: Promise<{ locale:
           {summary.needsBooking.length > 0 && (
             <section className="mt-6">
               <h2 className="mb-2 text-sm font-medium text-ochre">{t("needsBooking")}</h2>
-              <ul className="divide-y divide-line rounded-lg border border-ochre/30 bg-surface">
+              <ul className="divide-y divide-ochre/15 overflow-hidden rounded-2xl border border-ochre/30 bg-surface shadow-card">
                 {summary.needsBooking.map((entry) => (
                   <li
                     key={entry.id}
-                    className="flex items-center justify-between gap-3 px-4 py-2.5"
+                    className="flex items-center justify-between gap-3 px-4 py-3"
                   >
                     <span className="min-w-0 truncate text-ink">
-                      <span className="font-mono text-xs text-ink-faint">
+                      <span className="mr-2 font-mono text-xs text-ink-faint">
                         {dateLabel(entry.date)}
-                      </span>{" "}
+                      </span>
                       {entry.title}
                     </span>
-                    <span className="shrink-0 font-mono text-sm text-ochre">
+                    <span className="shrink-0 font-mono text-sm tabular-nums text-ochre">
                       {formatMoney(entry.costPerPerson ?? 0, "EUR", locale)}
                     </span>
                   </li>
@@ -119,21 +138,33 @@ function TotalCard({
   amount,
   equivalent,
   emphasized = false,
+  tone = "neutral",
 }: {
   label: string;
   amount: string;
   equivalent: string;
   emphasized?: boolean;
+  tone?: "neutral" | "booked" | "toPay";
 }) {
+  const toneClasses: Record<NonNullable<typeof tone>, string> = {
+    neutral: "",
+    booked: "border-turquoise/25",
+    toPay: "border-ochre/40",
+  };
+
   return (
     <div
-      className={`rounded-lg border p-4 ${
-        emphasized ? "border-turquoise/40" : "border-line"
-      } bg-surface`}
+      className={`rounded-2xl border p-4 shadow-card sm:p-5 ${
+        emphasized
+          ? "border-turquoise/40 bg-gradient-to-br from-turquoise/12 to-transparent"
+          : "border-line bg-surface"
+      } ${toneClasses[tone]}`}
     >
-      <p className="text-sm text-ink-muted">{label}</p>
-      <p className="mt-1 font-display text-2xl font-semibold text-ink">{amount}</p>
-      <p className="mt-0.5 font-mono text-xs text-ink-faint">≈ {equivalent}</p>
+      <p className="text-xs font-medium uppercase tracking-wide text-ink-faint">{label}</p>
+      <p className="mt-1.5 font-display text-2xl font-semibold tabular-nums text-ink sm:text-3xl">
+        {amount}
+      </p>
+      <p className="mt-1 font-mono text-xs text-ink-faint">≈ {equivalent}</p>
     </div>
   );
 }
