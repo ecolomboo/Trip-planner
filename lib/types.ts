@@ -59,6 +59,7 @@ export interface ChecklistItem {
   id: string;
   title: string;
   done: boolean;
+  position: number;
 }
 
 /** Fields a user fills in when creating an entry (id and position are derived). */
